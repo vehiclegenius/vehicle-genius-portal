@@ -12,7 +12,7 @@ def main():
     dotenv.read_dotenv(env_path)
 
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vehicle_genius_admin.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vehicle_genius_portal.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
