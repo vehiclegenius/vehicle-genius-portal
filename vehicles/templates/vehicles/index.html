@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form action="/vehicles/" method="post" class="flex flex-col max-w-screen-sm gap-4">
+    <div>
+      <div class="rounded-full border-2 border-blue-300 py-2 px-4 w-max">
+        2022 Toyota RAV4 Hybrid XLE
+      </div>
+    </div>
+
+    {% csrf_token %}
+    <label class="flex flex-col gap-2">
+      <span>VIN</span>
+      <input type="text" name="vin" value="JTME6RFV0ND522512" readonly>
+    </label>
+    <label class="flex flex-col gap-2">
+      <span>What is your question?</span>
+      <input type="text" name="prompt" placeholder="E.g.: How much will my car be worth in 2 years?">
+    </label>
+    <input class="blue-btn" type="submit" value="Submit">
+  </form>
+
+  {% if show_answer %}
+  <div class="flex flex-col max-w-screen-sm gap-4">
+    <p>Q: {{ question }}</p>
+    <p>A: {{ answer }}</p>
+  </div>
+  {% endif %}
+{% endblock %}
