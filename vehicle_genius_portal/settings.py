@@ -34,6 +34,14 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    'https://test.vehiclegenius.site',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://test.vehiclegenius.site',
+]
+
 
 # Application definition
 
