@@ -140,3 +140,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Tailwind app config
 
 TAILWIND_APP_NAME = 'theme'
+STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'static')
