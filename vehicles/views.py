@@ -5,37 +5,52 @@ import requests
 from django.shortcuts import render
 
 
-def index(request):
-    if request.method == 'GET':
-        return index_get(request)
-    elif request.method == 'POST':
-        return index_post(request)
+def index_get(request):
+    vehicles = make_api_get_request('/vehicles')
+    return render(request, 'vehicles/index.html', {'vehicles': vehicles})
 
 
-def index_post(request):
+def id_get(request, pk: str):
+    vehicle = make_api_get_request(f'/vehicles/{pk}')
+    return render(request, 'vehicles/id.html', {'vehicle': vehicle})
+
+
+def answer_user_prompt_post(request):
     data = parse_request_post(request.POST)
     print(data['vin'], data['messages'])
     body = {
-        'vin': data['vin'],
+        'vehicleId': data['vehicle_id'],
         'messages': data['messages'],
     }
+    answer = make_api_post_request('/assistant/answer-user-prompt', body)
+    vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}')
+    return render(request, 'vehicles/id.html', {
+        'question': data['messages'][-1]['content'],
+        'ai_messages': answer,
+        'vehicle': vehicle,
+    })
+
+
+def make_api_get_request(uri: str):
+    headers = {
+        'Accept': 'application/json',
+    }
+    response = requests.get(os.environ.get('API_BASE_URL') + uri, headers=headers)
+    answer = json.loads(response.content.decode('utf-8'))
+    return answer
+
+
+def make_api_post_request(uri: str, body):
     headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     }
     response = requests.post(
-        os.environ.get('API_BASE_URL') + '/assistant/answer-user-prompt',
+        os.environ.get('API_BASE_URL') + uri,
         data=json.dumps(body),
         headers=headers)
     answer = json.loads(response.content.decode('utf-8'))
-    return render(request, 'vehicles/index.html', {
-        'question': data['messages'][-1]['content'],
-        'ai_messages': answer,
-    })
-
-
-def index_get(request):
-    return render(request, 'vehicles/index.html')
+    return answer
 
 
 def parse_request_post(request_post):

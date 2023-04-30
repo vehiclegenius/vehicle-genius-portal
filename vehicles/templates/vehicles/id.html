@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <title>{{ vehicle.vinAuditData.marketValue.vehicle }} - Vehicle Genius</title>
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col gap-4">
+    <div class="border-b-[1px] border-gray-200 pb-2 text-sm">
+      <ol class="flex flex-row gap-2">
+        <li class="text-gray-400">
+          <a href="/">Home</a>
+          <span class="ml-2 text-black">/</span>
+        </li>
+        <li class="text-gray-400">
+          <a href="/vehicles">Vehicles</a>
+          <span class="ml-2 text-black">/</span>
+        </li>
+        <li>{{ vehicle.vinAuditData.marketValue.vehicle }}</li>
+      </ol>
+    </div>
+
+    <form action="/vehicles/answer-user-prompt/" method="post" class="flex flex-col max-w-screen-sm gap-4">
+      <div>
+        <h1 class="content-header">
+          {{ vehicle.vinAuditData.marketValue.vehicle }}
+        </h1>
+      </div>
+
+      {% csrf_token %}
+      <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}">
+      <label class="flex flex-col gap-2">
+        <span>VIN</span>
+        <input type="text" name="vin" value="{{ vehicle.vinAuditData.marketValue.vin }}" readonly>
+      </label>
+      <div class="flex flex-col gap-2 rounded bg-gray-100 p-2">
+        {% for message in ai_messages %}
+          <div class="flex flex-col gap-2 bg-white shadow p-2">
+            <div class="text-gray-500">{{ message.role|capfirst }}</div>
+            <div class="text-gray-700">{{ message.content }}</div>
+            <input type="hidden" name="messages[{{ forloop.counter0 }}].role" value="{{ message.role }}" />
+            <input type="hidden" name="messages[{{ forloop.counter0 }}].content" value="{{ message.content }}" />
+          </div>
+          {% if forloop.last %}
+            <input type="hidden" name="messages[{{ forloop.counter }}].role" value="user" />
+            <input type="text" name="messages[{{ forloop.counter }}].content" placeholder="E.g.: How much will my car be worth in 2 years?" />
+          {% endif %}
+        {% endfor %}
+        {% if not ai_messages %}
+          <input type="hidden" name="messages[0].role" value="user" />
+          <input type="text" name="messages[0].content" placeholder="E.g.: How much will my car be worth in 2 years?" />
+        {% endif %}
+
+      </div>
+      <input class="blue-btn" type="submit" value="Submit">
+    </form>
+  </div>
+{% endblock %}

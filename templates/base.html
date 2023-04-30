@@ -12,6 +12,8 @@
         height: 100%;
       }
     </style>
+    {% block head %}
+    {% endblock %}
 	</head>
 
 	<body class="bg-gray-50 font-sans leading-normal tracking-normal relative">
@@ -21,7 +23,7 @@
           Vehicle Genius Chatbot
         </div>
         {% if user.is_authenticated %}
-          <a href="/vehicles">Vehicles</a>
+          <a class="link" href="/vehicles">Vehicles</a>
         {% endif %}
       </div>
 {#      <div>#}
