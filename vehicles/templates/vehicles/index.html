@@ -17,7 +17,7 @@
     </div>
 
     <h1 class="content-header">Vehicles</h1>
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-12">
       {% for vehicle in vehicles %}
         <div class="flex flex-col gap-4">
           <h2 class="font-bold">{{ vehicle.vinAuditData.marketValue.vehicle }}</h2>
@@ -36,6 +36,22 @@
           </div>
         </div>
       {% endfor %}
+
+      <div>
+        <form class="flex flex-col gap-2" method="post" action="/vehicles/">
+          {% csrf_token %}
+          <h2 class="font-bold">Add vehicle</h2>
+          <div class="flex flex-col gap-4">
+            <label class="flex flex-col">
+              <span class="text-sm">VIN</span>
+              <input type="text" name="vin" />
+            </label>
+            <div>
+              <input type="submit" class="blue-btn" value="Add" />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 {% endblock %}

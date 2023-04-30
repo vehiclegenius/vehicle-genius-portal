@@ -1,8 +1,22 @@
 import json
 import os
+import uuid
 
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+
+def index(request):
+    if request.method == 'GET':
+        return index_get(request)
+    elif request.method == 'POST':
+        new_id = uuid.uuid4()
+        body = {
+            'id': str(new_id),
+            'vin': request.POST['vin'],
+        }
+        make_api_put_request(f'/vehicles/{new_id}', body)
+        return redirect(f'/vehicles/{new_id}')
 
 
 def index_get(request):
@@ -51,6 +65,18 @@ def make_api_post_request(uri: str, body):
         headers=headers)
     answer = json.loads(response.content.decode('utf-8'))
     return answer
+
+
+def make_api_put_request(uri: str, body):
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    }
+    response = requests.put(
+        os.environ.get('API_BASE_URL') + uri,
+        data=json.dumps(body),
+        headers=headers)
+    return response
 
 
 def parse_request_post(request_post):
