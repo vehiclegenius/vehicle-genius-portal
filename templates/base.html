@@ -47,26 +47,7 @@
 
     <div class="mx-auto">
       <div class="flex flex-col bg-white p-8">
-        {% if messages %}
-          <div class="max-w-full">
-            {% for message in messages %}
-              <div
-                class="
-                  alert-message w-full rounded py-3 px-5 flex flex-row justify-between gap-3 mb-8
-                  {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                    text-white bg-red-600
-                  {% endif %}
-                  {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                    text-white bg-green-600
-                  {% endif %}
-                "
-              >
-                <span class="text-center">{{ message }}</span>
-                <button class="close-alert text-lg">&times;</button>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
+        {% include "messages.html" %}
 
         <div class="mx-auto w-full max-w-screen-md lg:max-w-screen-lg">
           {% block content %}
@@ -75,11 +56,13 @@
       </div>
     </div>
 
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
-      crossorigin="anonymous"></script>
-    {% load static %}
-    <script src="{% static 'close-alert.js' %}"></script>
+{#    <script#}
+{#      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"#}
+{#      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="#}
+{#      crossorigin="anonymous"></script>#}
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
+{#    {% load static %}#}
+{#    <script src="{% static 'close-alert.js' %}"></script>#}
   </body>
 </html>

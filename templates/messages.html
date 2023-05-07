@@ -1,0 +1,20 @@
+{% if messages %}
+  <div id="messages" class="max-w-full">
+    {% for message in messages %}
+      <div
+        class="
+          alert-message w-full rounded py-3 px-5 flex flex-row justify-between gap-3 mb-8
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            text-white bg-red-600
+          {% endif %}
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            text-white bg-green-600
+          {% endif %}
+        "
+      >
+        <span class="text-center">{{ message }}</span>
+        <button class="close-alert text-lg" _="on click tell closest .alert-message remove yourself">&times;</button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
