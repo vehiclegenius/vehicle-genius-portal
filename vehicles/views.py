@@ -36,13 +36,28 @@ def answer_user_prompt_post(request):
         'vehicleId': data['vehicle_id'],
         'messages': data['messages'],
     }
-    answer = make_api_post_request('/assistant/answer-user-prompt', body)
+    answer = make_api_post_request('/assistant/prompt/answer', body)
     vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}')
     return render(request, 'vehicles/id.html', {
         'question': data['messages'][-1]['content'],
-        'ai_messages': answer,
+        'conversation': answer,
         'vehicle': vehicle,
     })
+
+
+def feedback_post(request):
+    data = parse_request_post(request.POST)
+    if parse_bool(data['is_positive']):
+        return render(request, 'vehicles/feedback_positive.html')
+    else:
+        body = {
+            'vehicleId': data['vehicle_id'],
+            'messages': data['messages'],
+            'isPositive': parse_bool(data['is_positive']),
+            'reason': data['reason'],
+        }
+        make_api_post_request('/assistant/prompt/feedback', body)
+        return render(request, 'vehicles/feedback_negative.html')
 
 
 def make_api_get_request(uri: str):
@@ -63,8 +78,11 @@ def make_api_post_request(uri: str, body):
         os.environ.get('API_BASE_URL') + uri,
         data=json.dumps(body),
         headers=headers)
-    answer = json.loads(response.content.decode('utf-8'))
-    return answer
+    if response.content:
+        answer = json.loads(response.content.decode('utf-8'))
+        return answer
+    else:
+        return None
 
 
 def make_api_put_request(uri: str, body):
@@ -105,3 +123,12 @@ def parse_request_post(request_post):
             parsed_post[key] = unique_value
 
     return parsed_post
+
+
+def parse_bool(value):
+    if value.lower() in ['true', 't', 'yes', 'y', '1']:
+        return True
+    elif value.lower() in ['false', 'f', 'no', 'n', '0']:
+        return False
+    else:
+        raise ValueError(f'Could not parse boolean value: {value}')

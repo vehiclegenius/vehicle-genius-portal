@@ -1,0 +1,27 @@
+<div class="flex flex-row justify-start gap-4" hx-target="this" hx-swap="outerHTML">
+  {% if conversation %}
+    <form class="flex flex-col gap-2">
+      {% csrf_token %}
+      {% include "vehicles/id_message_inputs.html" with conversation=conversation show_input=False %}
+      <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}" />
+      <label class="flex flex-col gap-2">
+        <span>Was this answer helpful?</span>
+        <span class="block">
+          <input type="radio" name="is_positive" value="True" /> Yes
+        </span>
+        <span class="flex flex-row justify-start items-center gap-2">
+          <span>
+            <input type="radio" name="is_positive" value="False" /> No
+          </span>
+          <input type="text" name="reason" placeholder="Why not?" class="ml-2" />
+        </span>
+      </label>
+      <button
+        class="blue-border-btn"
+        type="submit"
+        hx-post="/vehicles/feedback/">
+        Submit feedback
+      </button>
+    </form>
+  {% endif %}
+</div>
