@@ -5,6 +5,11 @@ import uuid
 import requests
 from django.shortcuts import render, redirect
 
+default_prompts = [
+    'How much will my car be worth in 2 years?',
+    'What is the car\'s length?',
+]
+
 
 def index(request):
     if request.method == 'GET':
@@ -21,28 +26,44 @@ def index(request):
 
 def index_get(request):
     vehicles = make_api_get_request('/vehicles')
+    # If there's only one vehicle redirect to /vehicle/<id>
+    if len(vehicles) == 1:
+        return redirect(f'/vehicles/{vehicles[0]["id"]}')
+    # Else render the index page
     return render(request, 'vehicles/index.html', {'vehicles': vehicles})
 
 
 def id_get(request, pk: str):
     vehicle = make_api_get_request(f'/vehicles/{pk}')
-    return render(request, 'vehicles/id.html', {'vehicle': vehicle})
+    return render(request, 'vehicles/id.html', {
+        'vehicle': vehicle,
+        'default_prompts': default_prompts,
+    })
+
+
+def id_prompt_get(request, pk: str, index: int):
+    prompt = default_prompts[index]
+    prompt_body = {
+        'vehicleId': pk,
+        'messages': [{'role': 'user', 'content': prompt}],
+    }
+    prompt_data = {
+        'vehicle_id': pk,
+    }
+    return answer_user_prompt(prompt_body, prompt_data, request)
+
+
+def add_get(request):
+    return render(request, 'vehicles/add_vehicle.html')
 
 
 def answer_user_prompt_post(request):
     data = parse_request_post(request.POST)
-    print(data['vin'], data['messages'])
     body = {
         'vehicleId': data['vehicle_id'],
         'messages': data['messages'],
     }
-    answer = make_api_post_request('/assistant/prompt/answer', body)
-    vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}')
-    return render(request, 'vehicles/id.html', {
-        'question': data['messages'][-1]['content'],
-        'conversation': answer,
-        'vehicle': vehicle,
-    })
+    return answer_user_prompt(body, data, request)
 
 
 def feedback_post(request):
@@ -58,6 +79,15 @@ def feedback_post(request):
         }
         make_api_post_request('/assistant/prompt/feedback', body)
         return render(request, 'vehicles/feedback_negative.html')
+
+
+def answer_user_prompt(body, data, request):
+    answer = make_api_post_request('/assistant/prompt/answer', body)
+    vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}')
+    return render(request, 'vehicles/id.html', {
+        'conversation': answer,
+        'vehicle': vehicle,
+    })
 
 
 def make_api_get_request(uri: str):

@@ -6,7 +6,7 @@
 
 {% block content %}
   <div class="flex flex-col gap-4">
-    <div class="border-b-[1px] border-gray-200 pb-2 text-sm">
+    <div class="border-b-[1px] border-gray-200 pb-4 text-sm flex flex-row justify-between">
       <ol class="flex flex-row gap-2">
         <li class="text-gray-400">
           <a href="/">Home</a>
@@ -18,6 +18,9 @@
         </li>
         <li>{{ vehicle.vinAuditData.marketValue.vehicle }}</li>
       </ol>
+      <div>
+        <a class="blue-btn" href="/vehicles/add">Add vehicle</a>
+      </div>
     </div>
 
     <form action="/vehicles/answer-user-prompt/" method="post" class="flex flex-col max-w-screen-sm gap-4">
@@ -44,8 +47,22 @@
       </div>
       <input class="blue-btn" type="submit" value="Submit">
     </form>
-    <div class="max-w-screen-sm">
-      {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}
-    </div>
+    {% if conversation %}
+      <div class="max-w-screen-sm">
+        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}
+      </div>
+    {% endif %}
+    {% if not conversation %}
+      <div class="max-w-screen-sm flex flex-col items-stretch gap-2">
+        {% for prompt in default_prompts %}
+          <a
+            class="blue-border-btn text-center"
+            href="/vehicles/{{ vehicle.id }}/prompt/{{ forloop.counter0 }}"
+          >
+            {{ prompt }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 {% endblock %}

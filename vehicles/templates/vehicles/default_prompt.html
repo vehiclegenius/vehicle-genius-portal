@@ -1,0 +1,4 @@
+<form action="/vehicles/{{ vehicle_id }}?p={{ prompt|safe }}">
+  {% csrf_token %}
+  <input type="hidden" name="vehicle_id" value="{{ vehicle_id }}">
+</form>
