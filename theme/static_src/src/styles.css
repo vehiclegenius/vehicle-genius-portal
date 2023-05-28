@@ -10,12 +10,16 @@
   @apply bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-400 cursor-pointer;
 }
 
+.indigo-btn {
+  @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-2xl hover:bg-indigo-400 cursor-pointer;
+}
+
 .blue-border-btn {
   @apply border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer;
 }
 
 input[type="text"] {
-  @apply rounded p-1;
+  @apply py-1 px-4 border-0 rounded-2xl;
 }
 
 .link {
@@ -28,4 +32,28 @@ input[type="text"] {
 
 .link:visited {
   @apply text-blue-700;
+}
+
+.card {
+  @apply shadow-md rounded-2xl bg-white p-4;
+}
+
+.fancy-bg {
+  @apply bg-gradient-to-r from-indigo-500 to-rose-500;
+}
+
+.chat-bubble-faq {
+  @apply bg-white p-4 rounded-2xl rounded-br-none cursor-pointer;
+}
+
+.chat-bubble-sent {
+  @apply fancy-bg text-white p-4 rounded-2xl rounded-br-none;
+}
+
+.chat-bubble-received {
+  @apply bg-white p-4 rounded-2xl rounded-tl-none;
+}
+
+.content {
+  height: calc(100vh - 60px);
 }

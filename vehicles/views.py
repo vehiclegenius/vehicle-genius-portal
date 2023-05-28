@@ -26,10 +26,6 @@ def index(request):
 
 def index_get(request):
     vehicles = make_api_get_request('/vehicles')
-    # If there's only one vehicle redirect to /vehicle/<id>
-    if len(vehicles) == 1:
-        return redirect(f'/vehicles/{vehicles[0]["id"]}')
-    # Else render the index page
     return render(request, 'vehicles/index.html', {'vehicles': vehicles})
 
 
@@ -61,7 +57,7 @@ def answer_user_prompt_post(request):
     data = parse_request_post(request.POST)
     body = {
         'vehicleId': data['vehicle_id'],
-        'messages': data['messages'],
+        'messages': data['messages'] + [{'role': 'user', 'content': data['user_message']}]
     }
     return answer_user_prompt(body, data, request)
 

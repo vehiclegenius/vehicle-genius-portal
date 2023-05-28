@@ -5,63 +5,54 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex flex-col gap-4">
-    <div class="border-b-[1px] border-gray-200 pb-4 text-sm flex flex-row justify-between">
-      <ol class="flex flex-row gap-2">
-        <li class="text-gray-400">
-          <a href="/">Home</a>
-          <span class="ml-2 text-black">/</span>
-        </li>
-        <li class="text-gray-400">
-          <a href="/vehicles">Vehicles</a>
-          <span class="ml-2 text-black">/</span>
-        </li>
-        <li>{{ vehicle.vinAuditData.marketValue.vehicle }}</li>
-      </ol>
-      <div>
-        <a class="blue-btn" href="/vehicles/add">Add vehicle</a>
-      </div>
-    </div>
-
-    <form action="/vehicles/answer-user-prompt/" method="post" class="flex flex-col max-w-screen-sm gap-4">
-      <div>
-        <h1 class="content-header">
-          {{ vehicle.vinAuditData.marketValue.vehicle }}
-        </h1>
-      </div>
-
-      {% csrf_token %}
-      <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}">
-      <label class="flex flex-col gap-2">
-        <span>VIN</span>
-        <input type="text" name="vin" value="{{ vehicle.vinAuditData.marketValue.vin }}" readonly>
-      </label>
-      <div class="flex flex-col gap-2 rounded bg-gray-100 p-2">
-        {% for message in conversation %}
-          <div class="flex flex-col gap-2 bg-white shadow p-2">
-            <div class="text-gray-500">{{ message.role|capfirst }}</div>
-            <div class="text-gray-700">{{ message.content }}</div>
-          </div>
-        {% endfor %}
-        {% include "vehicles/id_message_inputs.html" with conversation=conversation show_input=True %}
-      </div>
-      <input class="blue-btn" type="submit" value="Submit">
-    </form>
+  <div class="flex flex-col justify-between items-center h-full">
     {% if conversation %}
-      <div class="max-w-screen-sm">
-        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}
+      <form
+        action="/vehicles/answer-user-prompt/"
+        method="post"
+        class="flex flex-col justify-between items-center h-full gap-4">
+        {% csrf_token %}
+        <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}">
+        <div class="flex flex-col gap-2 rounded bg-gray-100">
+          <div class="chat-bubble-sent">
+            <input type="hidden" name="vin" value="{{ vehicle.vinAuditData.marketValue.vin }}">
+            {{ vehicle.vinAuditData.marketValue.vin }}
+          </div>
+          {% for message in conversation %}
+            <div
+              class="{% if message.role == 'user' %}chat-bubble-sent{% else %}chat-bubble-received{% endif %}"
+            >
+              {{ message.content }}
+            </div>
+          {% endfor %}
+          {% include "vehicles/id_message_inputs.html" with conversation=conversation show_input=True %}
+        </div>
+        <div class="flex justify-between gap-2 w-full pb-4">
+          <input type="text" class="w-full" name="user_message" placeholder="Send a message." />
+          <input class="indigo-btn" type="submit" value="→">
+        </div>
+      </form>
+{#      <div class="max-w-screen-sm">#}
+{#        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}#}
+{#      </div>#}
+    {% else %}
+      <div class="pt-10 flex flex-col gap-2 justify-center items-center w-full">
+        {% load static %}
+        <img src="{% static 'images/chatbot-header.svg' %}" alt="Vehicle Genius Chatbot" />
+        <div>{{ vehicle.vinAuditData.marketValue.vehicle }}</div>
       </div>
-    {% endif %}
-    {% if not conversation %}
-      <div class="max-w-screen-sm flex flex-col items-stretch gap-2">
-        {% for prompt in default_prompts %}
-          <a
-            class="blue-border-btn text-center"
-            href="/vehicles/{{ vehicle.id }}/prompt/{{ forloop.counter0 }}"
-          >
-            {{ prompt }}
-          </a>
-        {% endfor %}
+      <div class="flex flex-col gap-4">
+        <div class="text-2xl font-bold text-center">FAQs</div>
+        <div class="max-w-screen-sm flex flex-col items-stretch gap-2">
+          {% for prompt in default_prompts %}
+            <a
+              class="chat-bubble-faq"
+              href="/vehicles/{{ vehicle.id }}/prompt/{{ forloop.counter0 }}"
+            >
+              {{ prompt }}
+            </a>
+          {% endfor %}
+        </div>
       </div>
     {% endif %}
   </div>

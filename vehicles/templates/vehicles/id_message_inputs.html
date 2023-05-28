@@ -1,14 +1,4 @@
 {% for message in conversation %}
   <input type="hidden" name="messages[{{ forloop.counter0 }}].role" value="{{ message.role }}" />
   <input type="hidden" name="messages[{{ forloop.counter0 }}].content" value="{{ message.content }}" />
-  {% if forloop.last and show_input %}
-    <div class="flex flex-col gap-2 bg-white shadow p-2">
-      <input type="hidden" name="messages[{{ forloop.counter }}].role" value="user" />
-      <input type="text" name="messages[{{ forloop.counter }}].content" placeholder="E.g.: How much will my car be worth in 2 years?" />
-    </div>
-  {% endif %}
 {% endfor %}
-{% if not conversation and show_input %}
-  <input type="hidden" name="messages[0].role" value="user" />
-  <input type="text" name="messages[0].content" placeholder="E.g.: How much will my car be worth in 2 years?" />
-{% endif %}
