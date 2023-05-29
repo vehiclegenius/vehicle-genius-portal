@@ -16,11 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from users import views as user_views
 
 urlpatterns = [
     path('', views.redirect_to_vehicles, name='redirect_to_vehicles'),
     path('vehicles/', include('vehicles.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('register/', user_views.register, name='register'),
     path('__reload__/', include('django_browser_reload.urls')),
 ]

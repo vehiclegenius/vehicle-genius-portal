@@ -68,3 +68,22 @@ input[type="email"] {
   @apply block;
 }
 
+form.login-register {
+  @apply flex flex-col gap-4 items-center;
+}
+
+form.login-register p {
+  @apply flex flex-col w-full;
+}
+
+form.login-register ul {
+  @apply w-full list-disc list-inside text-sm text-gray-500;
+}
+
+form.login-register p label {
+  @apply font-bold;
+}
+
+form.login-register .helptext {
+  @apply text-sm text-gray-500;
+}

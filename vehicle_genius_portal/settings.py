@@ -152,3 +152,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Tailwind app config
 
 TAILWIND_APP_NAME = 'theme'
+
+# Login config
+
+LOGIN_REDIRECT_URL = '/vehicles'
+LOGOUT_REDIRECT_URL = '/accounts/login'

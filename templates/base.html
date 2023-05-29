@@ -26,23 +26,26 @@
           </a>
         </div>
       </div>
-{#      <div>#}
-{#        {% if user.is_authenticated %}#}
-{#          {% if user.first_name %}#}
-{#          <div>#}
-{#            User: {{ user.first_name }}#}
-{#            {% if user.last_name %}#}
-{#              {{ user.last_name }}#}
-{#            {% endif %}#}
-{#          </div>#}
-{#          {% else %}#}
-{#            <div>User: {{ user.username }}</div>#}
-{#          {% endif %}#}
-{#          <div><a class="link" href="{% url 'logout' %}">Log out</a></div>#}
-{#        {% else %}#}
-{#          <div><a class="link" href="{% url 'login' %}">Log in</a></div>#}
-{#        {% endif %}#}
-{#      </div>#}
+      <div>
+        {% if user.is_authenticated %}
+          {% if user.first_name %}
+          <div>
+            User: {{ user.first_name }}
+            {% if user.last_name %}
+              {{ user.last_name }}
+            {% endif %}
+          </div>
+          {% else %}
+            <div>User: {{ user.username }}</div>
+          {% endif %}
+          <div><a class="link" href="{% url 'logout' %}">Log out</a></div>
+        {% else %}
+          <div class="flex gap-4">
+            <a class="indigo-btn" href="{% url 'login' %}">Log in</a>
+            <a class="indigo-btn fancy-bg" href="{% url 'register' %}">Register</a>
+          </div>
+        {% endif %}
+      </div>
     </div>
 
     <div class="mx-auto content">
