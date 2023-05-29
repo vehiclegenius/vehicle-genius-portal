@@ -11,14 +11,16 @@
 }
 
 .indigo-btn {
-  @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-2xl hover:bg-indigo-400 cursor-pointer;
+  @apply bg-indigo-500 text-white font-bold py-2 px-4 rounded-2xl hover:bg-indigo-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 .blue-border-btn {
   @apply border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded-full hover:bg-blue-500 hover:text-white cursor-pointer;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"],
+input[type="email"] {
   @apply py-1 px-4 border-0 rounded-2xl;
 }
 
@@ -51,9 +53,18 @@ input[type="text"] {
 }
 
 .chat-bubble-received {
-  @apply bg-white p-4 rounded-2xl rounded-tl-none;
+  @apply bg-white p-4 rounded-2xl rounded-tl-none whitespace-pre-wrap;
 }
 
 .content {
   height: calc(100vh - 60px);
 }
+
+.spinner {
+  @apply hidden ;
+}
+
+.spinner.loading {
+  @apply block;
+}
+

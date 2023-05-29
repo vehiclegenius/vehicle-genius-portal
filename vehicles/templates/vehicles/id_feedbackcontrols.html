@@ -1,7 +1,7 @@
 <div class="flex flex-row justify-start gap-4" hx-target="this" hx-swap="outerHTML">
   <form class="flex flex-col gap-2">
     {% csrf_token %}
-    {% include "vehicles/id_message_inputs.html" with conversation=conversation show_input=False %}
+    {% include "vehicles/id_message_inputs.html" with conversation=conversation %}
     <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}" />
     <label class="flex flex-col gap-2">
       <span>Was this answer helpful?</span>
