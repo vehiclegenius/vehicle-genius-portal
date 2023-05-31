@@ -6,8 +6,11 @@ import requests
 from django.shortcuts import render, redirect
 
 default_prompts = [
-    'How much will my car be worth in 2 years?',
-    'What is the car\'s length?',
+    'I need maintenance advice 🛠️',
+    'Help me with my car finances 💰',
+    'Is my insurance fair 🤷',
+    'I\'m thinking about buying or selling a car 🚙',
+    'I want to hear a fun fact about my car 😎',
 ]
 
 
