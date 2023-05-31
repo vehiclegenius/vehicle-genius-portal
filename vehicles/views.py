@@ -20,17 +20,17 @@ def index(request):
             'id': str(new_id),
             'vin': request.POST['vin'],
         }
-        make_api_put_request(f'/vehicles/{new_id}', body)
+        make_api_put_request(f'/vehicles/{new_id}?username={request.user.username}', body)
         return redirect(f'/vehicles/{new_id}')
 
 
 def index_get(request):
-    vehicles = make_api_get_request('/vehicles')
+    vehicles = make_api_get_request(f'/vehicles?username={request.user.username}')
     return render(request, 'vehicles/index.html', {'vehicles': vehicles})
 
 
 def id_get(request, pk: str):
-    vehicle = make_api_get_request(f'/vehicles/{pk}')
+    vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
     return render(request, 'vehicles/id.html', {
         'vehicle': vehicle,
         'default_prompts': default_prompts,
@@ -72,14 +72,16 @@ def feedback_post(request):
             'messages': data['messages'],
             'isPositive': parse_bool(data['is_positive']),
             'reason': data['reason'],
+            'username': request.user.username,
         }
         make_api_post_request('/assistant/prompt/feedback', body)
         return render(request, 'vehicles/feedback_negative.html')
 
 
 def answer_user_prompt(body, data, request):
+    body['username'] = request.user.username
     answer = make_api_post_request('/assistant/prompt/answer', body)
-    vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}')
+    vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}?username={request.user.username}')
     return render(request, 'vehicles/id.html', {
         'conversation': answer,
         'vehicle': vehicle,
