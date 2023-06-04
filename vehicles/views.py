@@ -23,8 +23,9 @@ def index(request):
             'id': str(new_id),
             'vin': request.POST['vin'],
         }
-        make_api_put_request(f'/vehicles/{new_id}?username={request.user.username}', body)
-        return redirect(f'/vehicles/{new_id}')
+        response = make_api_put_request(f'/vehicles/{new_id}?username={request.user.username}', body)
+        final_id = json.loads(response.content.decode('utf-8'))
+        return redirect(f'/vehicles/{final_id}')
 
 
 def index_get(request):
