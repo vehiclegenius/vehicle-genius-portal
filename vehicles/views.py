@@ -32,12 +32,17 @@ def index_get(request):
     return render(request, 'vehicles/index.html', {'vehicles': vehicles})
 
 
-def id_get(request, pk: str):
+def id_chatbot_get(request, pk: str):
     vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
     return render(request, 'vehicles/chatbot.html', {
         'vehicle': vehicle,
         'default_prompts': default_prompts,
     })
+
+
+def id_get(request, pk: str):
+    vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
+    return render(request, 'vehicles/id.html', {'vehicle': vehicle})
 
 
 def id_prompt_get(request, pk: str, index: int):
@@ -58,6 +63,8 @@ def add_get(request):
 
 def answer_user_prompt_post(request):
     data = parse_request_post(request.POST)
+    if not 'messages' in data:
+        data['messages'] = []
     body = {
         'vehicleId': data['vehicle_id'],
         'messages': data['messages'] + [{'role': 'user', 'content': data['user_message']}]

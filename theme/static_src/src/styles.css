@@ -37,7 +37,7 @@ input[type="email"] {
 }
 
 .card {
-  @apply shadow-md rounded-2xl bg-white p-4;
+  @apply shadow-md rounded-2xl bg-white p-4 w-full;
 }
 
 .fancy-bg {
@@ -86,4 +86,10 @@ form.login-register p label {
 
 form.login-register .helptext {
   @apply text-sm text-gray-500;
+}
+
+.chart-card {
+  background-image: url('/static/images/line-chart.jpg');
+  background-repeat: no-repeat;
+  background-position: 90% 50%;
 }
