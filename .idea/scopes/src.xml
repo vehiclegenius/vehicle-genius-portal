@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="src" pattern="(gitignore||file[vehicle-genius-portal]:*/)&amp;&amp;!file[vehicle-genius-portal]:.idea//*&amp;&amp;!file[vehicle-genius-portal]:.pyenv//*" />
+</component>

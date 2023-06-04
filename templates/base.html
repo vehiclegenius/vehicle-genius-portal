@@ -39,11 +39,11 @@
             <div>User: {{ user.username }}</div>
           {% endif %}
           <div><a class="link" href="{% url 'logout' %}">Log out</a></div>
-        {% else %}
-          <div class="flex gap-4">
-            <a class="indigo-btn" href="{% url 'login' %}">Log in</a>
-            <a class="indigo-btn fancy-bg" href="{% url 'register' %}">Register</a>
-          </div>
+{#        {% else %}#}
+{#          <div class="flex gap-4">#}
+{#            <a class="indigo-btn" href="{% url 'login' %}">Log in</a>#}
+{#            <a class="indigo-btn fancy-bg" href="{% url 'register' %}">Register</a>#}
+{#          </div>#}
         {% endif %}
       </div>
     </div>
