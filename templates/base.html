@@ -16,7 +16,7 @@
     {% endblock %}
 	</head>
 
-	<body class="bg-gray-100 font-sans leading-normal tracking-normal relative">
+	<body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div class="max-w-full flex justify-between items-center bg-white px-4 h-[60px]">
       <div class="flex gap-4 items-end">
         <div class="text-2xl">
@@ -67,5 +67,8 @@
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
 {#    {% load static %}#}
 {#    <script src="{% static 'close-alert.js' %}"></script>#}
+
+    {% block body_bottom %}
+    {% endblock %}
   </body>
 </html>

@@ -61,7 +61,7 @@ input[type="email"] {
 }
 
 .spinner {
-  @apply hidden ;
+  @apply hidden;
 }
 
 .spinner.loading {

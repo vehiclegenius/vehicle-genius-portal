@@ -5,52 +5,29 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex flex-col justify-between items-center h-full">
+  <div class="flex flex-col justify-between items-center gap-6 h-full">
     {% if conversation %}
-      <form
-        action="/vehicles/answer-user-prompt/"
-        method="post"
-        class="flex flex-col justify-between items-center h-full gap-4">
-        {% csrf_token %}
-        <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}">
-        <div class="flex flex-col gap-2 rounded bg-gray-100">
+      <div class="flex flex-col gap-2 rounded bg-gray-100">
+        {% if conversation %}
           <div class="chat-bubble-sent">
             <input type="hidden" name="vin" value="{{ vehicle.vinAuditData.marketValue.vin }}">
-            {{ vehicle.vinAuditData.marketValue.vin }}
+            {{ vehicle.vinAuditData.marketValue.vehicle }}
           </div>
-          {% for message in conversation %}
-            <div
-              class="{% if message.role == 'user' %}chat-bubble-sent{% else %}chat-bubble-received{% endif %}"
-            >{{ message.content }}</div>
-          {% endfor %}
-          {% include "vehicles/id_message_inputs.html" with conversation=conversation %}
-        </div>
-        <div class="flex flex-col items-center w-full gap-2">
-          <div class="spinner">{% include 'spinner.html' %}</div>
-
-          <div class="flex justify-between gap-2 w-full pb-4">
-            <input type="text" class="w-full" name="user_message" placeholder="Send a message." />
-            <input
-              class="indigo-btn"
-              type="submit"
-              value="→"
-              _="on click add .loading to <.spinner/>"
-            />
-          </div>
-        </div>
-      </form>
-{#      <div class="max-w-screen-sm">#}
-{#        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}#}
-{#      </div>#}
+        {% endif %}
+        {% for message in conversation %}
+          <div
+            class="{% if message.role == 'user' %}chat-bubble-sent{% else %}chat-bubble-received{% endif %}"
+          >{{ message.content }}</div>
+        {% endfor %}
+      </div>
     {% else %}
-      <div class="pt-10 flex flex-col gap-2 justify-center items-center w-full">
+      <div class="flex flex-col gap-2 justify-center items-center w-full">
         {% load static %}
         <img src="{% static 'images/chatbot-header.svg' %}" alt="Vehicle Genius Chatbot" />
         <div>{{ vehicle.vinAuditData.marketValue.vehicle }}</div>
       </div>
-      <div class="flex flex-col gap-4 items-center">
-        <div class="text-2xl font-bold text-center">FAQs</div>
-        <div class="spinner">{% include 'spinner.html' %}</div>
+      <div class="flex flex-col gap-2 items-center pb-4">
+        <div class="text-2xl font-bold text-center">Popular Questions</div>
         <div class="max-w-screen-sm flex flex-col items-stretch gap-2">
           {% for prompt in default_prompts %}
             <a
@@ -64,5 +41,34 @@
         </div>
       </div>
     {% endif %}
+  <div class="w-full pb-10"></div>
+{#      <div class="max-w-screen-sm">#}
+{#        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}#}
+{#      </div>#}
   </div>
+{% endblock %}
+
+{% block body_bottom %}
+  <form
+    action="/vehicles/answer-user-prompt/"
+    method="post"
+    class="flex flex-col justify-center items-center bg-white border-t border-gray-300 h-14 w-full gap-4 fixed bottom-0 px-4"
+  >
+    {% csrf_token %}
+    <input type="hidden" name="vehicle_id" value="{{ vehicle.id }}">
+    {% include "vehicles/id_message_inputs.html" with conversation=conversation %}
+
+    <div class="flex flex-col items-center w-full gap-2">
+      <div class="flex justify-between items-center gap-2 w-full">
+        <div class="spinner">{% include 'spinner.html' %}</div>
+        <input type="text" class="w-full !border border-gray-300" name="user_message" placeholder="Send a message." />
+        <input
+          class="indigo-btn"
+          type="submit"
+          value="→"
+          _="on click add .loading to <.spinner/>"
+        />
+      </div>
+    </div>
+  </form>
 {% endblock %}
