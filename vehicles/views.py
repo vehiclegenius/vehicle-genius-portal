@@ -34,7 +34,7 @@ def index_get(request):
 
 def id_get(request, pk: str):
     vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
-    return render(request, 'vehicles/id.html', {
+    return render(request, 'vehicles/chatbot.html', {
         'vehicle': vehicle,
         'default_prompts': default_prompts,
     })
@@ -85,7 +85,7 @@ def answer_user_prompt(body, data, request):
     body['username'] = request.user.username
     answer = make_api_post_request('/assistant/prompt/answer', body)
     vehicle = make_api_get_request(f'/vehicles/{data["vehicle_id"]}?username={request.user.username}')
-    return render(request, 'vehicles/id.html', {
+    return render(request, 'vehicles/chatbot.html', {
         'conversation': answer,
         'vehicle': vehicle,
     })
