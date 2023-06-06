@@ -31,10 +31,10 @@
       <div class="text-2xl">
         {{ vehicle.vinAuditData.marketValue.vehicle }}
       </div>
-      <div>
-        {% load static %}
-        <img src="{% static 'images/porsche.png' %}" />
-      </div>
+{#      <div>#}
+{#        {% load static %}#}
+{#        <img src="{% static 'images/porsche.png' %}" />#}
+{#      </div>#}
     </div>
     {% include "vehicles/chart-card-1.html" with title="Market Value" amount=0 chart_id="market-value" %}
     {% include "vehicles/chart-card-1.html" with title="Annual Insurance Cost" amount=0 chart_id="annual-insurance-cost" %}

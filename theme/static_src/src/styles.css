@@ -89,7 +89,7 @@ form.login-register .helptext {
 }
 
 .chart-card {
-  background-image: url('/static/images/line-chart.jpg');
-  background-repeat: no-repeat;
-  background-position: 90% 50%;
+  /*background-image: url('/static/images/line-chart.jpg');*/
+  /*background-repeat: no-repeat;*/
+  /*background-position: 90% 50%;*/
 }
