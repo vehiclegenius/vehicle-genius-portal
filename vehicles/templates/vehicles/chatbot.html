@@ -41,10 +41,6 @@
         </div>
       </div>
     {% endif %}
-  <div class="w-full pb-10"></div>
-{#      <div class="max-w-screen-sm">#}
-{#        {% include "vehicles/id_feedbackcontrols.html" with vehicle=vehicle conversation=conversation %}#}
-{#      </div>#}
   </div>
 {% endblock %}
 
@@ -62,6 +58,9 @@
       <div class="flex justify-between items-center gap-2 w-full">
         <div class="spinner">{% include 'spinner.html' %}</div>
         <input type="text" class="w-full !border border-gray-300" name="user_message" placeholder="Send a message." />
+        {% if conversation %}
+          <span class="text-lg w-10 cursor-pointer" hx-post="/vehicles/feedback/" hx-vals='{"is_positive": false, "reason": ""}'>👎</span>
+        {% endif %}
         <input
           class="indigo-btn"
           type="submit"
