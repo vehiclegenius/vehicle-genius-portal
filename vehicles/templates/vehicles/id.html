@@ -48,7 +48,7 @@
   {{ vehicle|json_script:'vehicle' }}
   <script>
     const vehicle = JSON.parse(document.getElementById('vehicle').textContent);
-    const averageMarketValue = vehicle.vinAuditData.marketValue.prices.distribution.map(a => a.group.max + a.group.min / 2);
+    const averageMarketValue = vehicle.vinAuditData.marketValue.prices.distribution.map(a => (a.group.max + a.group.min) / 2);
     const annualInsuranceCost = vehicle.vinAuditData.ownershipCost.insuranceCost;
     const annualFuelCost = vehicle.vinAuditData.ownershipCost.fuelCost;
     const annualMaintenanceCost = vehicle.vinAuditData.ownershipCost.maintenanceCost;
