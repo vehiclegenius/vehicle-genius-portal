@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'vehicles',
     'tailwind',
     'theme',
+    'oauth',
     'django_browser_reload',
     'django.contrib.humanize',
 ]

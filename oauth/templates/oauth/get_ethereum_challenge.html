@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <title>Ethereum Login to Vehicle Genius</title>
+{% endblock %}
+
+{% block content %}
+  {% csrf_token %}
+  <button id="eth-login" class="blue-btn">Auth with Eth</button>
+{% endblock %}
+
+{% block body_bottom %}
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.0.1/web3.min.js"
+    integrity="sha512-aMlTKMbzNiS4Spg+fEEaH2XaCoN7r1e4KLqMFgz/dqmQ8lb6UHkod0I8epLkbO+DvSPXE4SU7qlxXpx08j7uFw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
+  {% load static %}
+  <script src="{% static 'oauth/eth.js' %}"></script>
+{% endblock %}
