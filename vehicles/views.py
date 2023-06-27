@@ -4,6 +4,9 @@ import uuid
 
 import requests
 from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from vehicles.forms import VehicleUserDataForm
 
 default_prompts = [
     'I need maintenance advice 🛠️',
@@ -44,6 +47,41 @@ def id_chatbot_get(request, pk: str):
 def id_get(request, pk: str):
     vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
     return render(request, 'vehicles/id.html', {'vehicle': vehicle})
+
+
+def id_edit(request, pk: str):
+    vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
+
+    if request.method == 'POST':
+        form = VehicleUserDataForm(request.POST)
+        if form.is_valid():
+            vehicle['userData'] = {
+                'insuranceRate': form['insurance_rate'].data,
+                'insuranceProvider': form['insurance_provider'].data,
+                'insuranceRenewalDate': form['insurance_renewal_date'].data,
+                'financingInterestRate': form['financing_interest_rate'].data,
+                'financingTermEnd': form['financing_term_end'].data,
+                'previousMaintenanceData': form['previous_maintenance_data'].data,
+            }
+            del vehicle['vinAuditData']
+            make_api_put_request(f'/vehicles/{pk}?username={request.user.username}', vehicle)
+            messages.success(request, 'Vehicle updated successfully')
+        else:
+            messages.error(request, 'Invalid data')
+    else:
+        user_data = vehicle['userData']
+        initial_data = {
+            'insurance_rate': user_data['insuranceRate'],
+            'insurance_provider': user_data['insuranceProvider'],
+            'insurance_renewal_date': user_data['insuranceRenewalDate'],
+            'financing_interest_rate': user_data['financingInterestRate'],
+            'financing_term_end': user_data['financingTermEnd'],
+            'previous_maintenance_data': user_data['previousMaintenanceData'],
+        }
+        form = VehicleUserDataForm(initial=initial_data)
+
+    vehicle = make_api_get_request(f'/vehicles/{pk}?username={request.user.username}')
+    return render(request, 'vehicles/edit.html', {'vehicle': vehicle, 'form': form})
 
 
 def id_prompt_get(request, pk: str, index: int):

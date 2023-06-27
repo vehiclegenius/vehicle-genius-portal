@@ -20,7 +20,10 @@
 
 input[type="text"],
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+input[type="number"],
+input[type="date"],
+textarea {
   @apply py-1 px-4 border-0 rounded-2xl;
 }
 
@@ -92,4 +95,14 @@ form.login-register .helptext {
   /*background-image: url('/static/images/line-chart.jpg');*/
   /*background-repeat: no-repeat;*/
   /*background-position: 90% 50%;*/
+}
+
+#vehicle-user-data-form {
+  @apply flex flex-col gap-4;
+}
+#vehicle-user-data-form p {
+  @apply flex flex-col;
+}
+#vehicle-user-data-form label {
+  @apply font-bold;
 }
