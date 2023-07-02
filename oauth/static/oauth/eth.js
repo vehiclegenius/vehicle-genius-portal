@@ -21,7 +21,10 @@ async function onclick() {
     const signature = await signChallenge(walletAddress, challenge);
     console.log(`Signature: ${signature}`)
     const final = await submitChallenge(JSON.parse(challenge), signature);
-    console.log(`Final res: ${final}`);
+
+    if (final.success) {
+      window.location.href = '/';
+    }
   } catch (e) {
     console.error(`Problem fulfilling challenge`, e);
   }
@@ -40,7 +43,7 @@ async function generateChallenge(walletAddress) {
 }
 
 async function signChallenge(walletAddress, challenge) {
-  const msg = `0x${toHex(challenge)}`;
+  const msg = `0x${toHex(JSON.parse(challenge).challenge)}`;
   return window.ethereum.request({
     method: 'personal_sign',
     params: [msg, walletAddress],
@@ -61,7 +64,7 @@ async function submitChallenge(challenge, signature) {
     },
     body: JSON.stringify(payload),
   })
-    .then(res => res.text());
+    .then(res => res.json());
 
   return res;
 }

@@ -19,9 +19,11 @@ from . import views
 
 urlpatterns = [
     path('', views.redirect_to_vehicles, name='redirect_to_vehicles'),
-    path('vehicles/', include('vehicles.urls')),
+    path('vehicles/', include('vehicles.urls', namespace='vehicles')),
     path('admin/', admin.site.urls),
+    # override logout view to delete extra cookies
+    path('accounts/logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('oauth/', include('oauth.urls')),
+    path('oauth/', include('oauth.urls', namespace='oauth')),
     path('__reload__/', include('django_browser_reload.urls')),
 ]

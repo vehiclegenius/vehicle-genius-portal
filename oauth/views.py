@@ -1,14 +1,19 @@
 import json
 import os
+from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 
 import requests as requests
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 
 
-def get_ethereum_challenge(request):
-    return render(request, 'oauth/get_ethereum_challenge.html')
+def get_challenge(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('vehicles:index'))
+
+    return render(request, 'oauth/get_challenge.html')
 
 
 def generate_challenge(request):
@@ -41,9 +46,22 @@ def submit_challenge(request):
         'signature': body['signature'],
     }
 
-    challenge = requests.post(url, data=data)
+    auth_res = requests.post(url, data=data).json()
 
-    return HttpResponse(challenge, content_type='text/plain')
+    if 'access_token' not in auth_res:
+        return HttpResponse(status=401, content_type='application/json')
+
+    user_res = requests.get(
+        f'{os.environ.get("USERS_API_HOST")}/v1/user',
+        headers={'Authorization': f'Bearer {auth_res["access_token"]}'},
+    ).json()
+
+    expires_in = datetime.now() + timedelta(seconds=auth_res['expires_in'])
+    res = HttpResponse(json.dumps({'success': True}), content_type='application/json')
+    res.set_cookie('access_token', auth_res['access_token'], expires=expires_in)
+    res.set_cookie('user_id', user_res['web3']['address'], expires=expires_in)
+
+    return res
 
 
 def callback(request):

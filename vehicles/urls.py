@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from . import views
 
+app_name = 'vehicles'
+
 urlpatterns = [
     path('', login_required(views.index), name='index'),
     path('add', login_required(views.add_get), name='add'),

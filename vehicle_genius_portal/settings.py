@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
+    'oauth.oauth_middleware.OAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'vehicle_genius_portal.urls'

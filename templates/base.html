@@ -41,8 +41,7 @@
           <div><a class="link" href="{% url 'logout' %}">Log out</a></div>
 {#        {% else %}#}
 {#          <div class="flex gap-4">#}
-{#            <a class="indigo-btn" href="{% url 'login' %}">Log in</a>#}
-{#            <a class="indigo-btn fancy-bg" href="{% url 'register' %}">Register</a>#}
+{#            <a class="indigo-btn fancy-bg" href="{% url 'oauth_get_challenge' %}">Sign in / Register</a>#}
 {#          </div>#}
         {% endif %}
       </div>
@@ -59,14 +58,8 @@
       </div>
     </div>
 
-{#    <script#}
-{#      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"#}
-{#      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="#}
-{#      crossorigin="anonymous"></script>#}
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
-{#    {% load static %}#}
-{#    <script src="{% static 'close-alert.js' %}"></script>#}
 
     {% block body_bottom %}
     {% endblock %}

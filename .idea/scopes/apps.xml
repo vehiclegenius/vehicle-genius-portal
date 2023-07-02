@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="apps" pattern="file[vehicle-genius-portal]:vehicles//*||file[vehicle-genius-portal]:vehicle_genius_portal//*||file[vehicle-genius-portal]:users//*||file[vehicle-genius-portal]:templates//*||file[vehicle-genius-portal]:static//*||file[vehicle-genius-portal]:oauth//*" />
+</component>

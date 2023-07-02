@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block head %}
-  <title>Ethereum Login to Vehicle Genius</title>
+  <title>OAuth Login to Vehicle Genius</title>
 {% endblock %}
 
 {% block content %}
   {% csrf_token %}
-  <button id="eth-login" class="blue-btn">Auth with Eth</button>
+  <button id="eth-login" class="blue-btn">Start OAuth Login</button>
 {% endblock %}
 
 {% block body_bottom %}
