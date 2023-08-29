@@ -56,6 +56,7 @@
           <button
             class="share indigo-btn fancy-bg text-center"
             x-token-id="{{ vehicle.token_id }}"
+            x-vin="{{ vehicle.vin }}"
             class="indigo-btn fancy-bg text-center"
             _="on click add .loading to <.spinner/>"
           >
@@ -64,7 +65,7 @@
         {% endfor %}
       </ul>
       {% else %}
-      <p class="text-gray-400">You don't have any vehicles.</p>
+      <p class="text-gray-400">You don't have any vehicles, or you've shared them all already.</p>
       {% endif %}
     </div>
   </div>
@@ -77,7 +78,6 @@
   ></script>
   {{ abi|json_script:'abi' }}
   <script>
-    console.log('Initializing...');
     const web3 = new window.Web3(window.ethereum);
     const contractAddress = '{{ contract_address }}';
     const contractABI = JSON.parse(document.getElementById('abi').textContent);
@@ -123,21 +123,19 @@
       }
     }
 
-    async function requestFetch(tokenId) {
+    async function requestFetch(vin) {
       console.log('Requesting fetch')
-      const csrfToken: string = (document.querySelector('input[name="csrfmiddlewaretoken"]') as HTMLInputElement)?.value;
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
 
       if ((csrfToken ?? '').length === 0) {
         return alert('CSRF token not found. Did you program it in?');
       }
 
-      const response = await fetch('/vehicles/fetch/', {
+      const response = await fetch(`/vehicles/add/${vin}/fetch/`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
-        body: JSON.stringify({ token_id: tokenId }),
       });
     }
 
@@ -150,14 +148,18 @@
     }
 
     document.querySelectorAll('button.share').forEach((button) => {
-      console.log('Registering button...')
       button.addEventListener('click', async () => {
         console.log('Click')
         const tokenId = button.attributes['x-token-id'].value;
+        const vin = button.attributes['x-vin'].value;
         try {
           await setPrivilege(tokenId);
         } finally {
-          await requestFetch(tokenId);
+          try {
+            await requestFetch(vin);
+          } finally {
+            window.location.href = '/vehicles/';
+          }
         }
       });
     });

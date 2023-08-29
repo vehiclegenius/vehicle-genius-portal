@@ -115,8 +115,9 @@ def add_get(request):
             'target_wallet_address': os.environ.get('SHARE_TARGET_WALLET_ADDRESS'),
         })
 
-def add_fetch(request, vin: str):
-    response = make_api_post_request(f'/vehicles/{vin}/fetch-dimo?username={request.user.username}')
+def add_fetch_post(request, pk: str):
+    vin = pk
+    response = make_api_post_request(f'/vehicles/{vin}/fetch-dimo?username={request.user.username}', {})
     return redirect(f'/vehicles')
 
 
