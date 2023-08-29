@@ -97,7 +97,27 @@ def id_prompt_get(request, pk: str, index: int):
 
 
 def add_get(request):
-    return render(request, 'vehicles/add_vehicle.html')
+    added_vehicles = make_api_get_request(f'/vehicles?username={request.user.username}')
+    added_vehicle_vins = [vehicle['vin'].lower() for vehicle in added_vehicles]
+    owned_vehicles = make_dimo_api_get_request(request, f'{os.environ.get("DEVICES_API_HOST")}/v1/user/devices/me')
+    owned_vehicles_data = [
+        {
+            'vin': vehicle['vin'],
+            'name': vehicle['deviceDefinition']['name'],
+            'token_id': vehicle['nft']['tokenId'],
+        } for vehicle in owned_vehicles['userDevices'] if vehicle['vin'].lower() not in added_vehicle_vins
+    ]
+    with open('vehicles/abi.json') as abi:
+        return render(request, 'vehicles/add_vehicle.html', {
+            'owned_vehicles': owned_vehicles_data,
+            'abi': json.load(abi),
+            'contract_address': os.environ.get('DIMO_CONTRACT_ADDRESS'),
+            'target_wallet_address': os.environ.get('SHARE_TARGET_WALLET_ADDRESS'),
+        })
+
+def add_fetch(request, vin: str):
+    response = make_api_post_request(f'/vehicles/{vin}/fetch-dimo?username={request.user.username}')
+    return redirect(f'/vehicles')
 
 
 def answer_user_prompt_post(request):
@@ -135,6 +155,16 @@ def answer_user_prompt(body, data, request):
         'conversation': answer,
         'vehicle': vehicle,
     })
+
+
+def make_dimo_api_get_request(request, url: str):
+    headers = {
+        'Accept': 'application/json',
+        'Authorization': f'Bearer {request.COOKIES.get("access_token")}',
+    }
+    response = requests.get(url, headers=headers)
+    answer = json.loads(response.content.decode('utf-8'))
+    return answer
 
 
 def make_api_get_request(uri: str):

@@ -20,24 +20,146 @@
       </ol>
     </div>
 
-    <form class="flex flex-col gap-2" method="post" action="/vehicles/">
-      {% csrf_token %}
-      <h2 class="font-bold">Add vehicle</h2>
-      <div class="flex flex-col gap-4 items-center">
-        <label class="flex flex-col w-full">
-          <span class="sr-only">VIN</span>
-          <input type="text" name="vin" placeholder="VIN" />
-        </label>
-        <div class="spinner">{% include 'spinner.html' %}</div>
-        <div class="w-full">
-          <input
-            type="submit"
-            class="w-full indigo-btn fancy-bg text-center"
-            value="Add Vehicle"
-            _="on click add .loading to <.spinner/>"
-          />
+    <div class="flex flex-col gap-4 bg-white rounded-2xl px-4 pt-2 pb-4">
+      <h2 class="text-gray-400">Add vehicle by VIN</h2>
+      <form class="flex flex-col gap-2" method="post" action="/vehicles/">
+        {% csrf_token %}
+        <div class="flex flex-col gap-4 items-center">
+          <label class="flex flex-col w-full">
+            <span class="sr-only">VIN</span>
+            <input class="border border-gray-200" type="text" name="vin" placeholder="VIN" />
+          </label>
+          <div class="spinner">{% include 'spinner.html' %}</div>
+          <div class="w-full">
+            <input
+              type="submit"
+              class="w-full indigo-btn fancy-bg text-center"
+              value="Add Vehicle"
+              _="on click add .loading to <.spinner/>"
+            />
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
+
+    <div class="flex flex-col gap-4 bg-white rounded-2xl px-4 pt-2 pb-4">
+      <h2 class="text-gray-400">Add DIMO vehicle</h2>
+      {% if owned_vehicles|length > 0 %}
+      <ul class="flex flex-col gap-4">
+        {% for vehicle in owned_vehicles %}
+        <li class="flex flex-row gap-4 justify-between items-start">
+          <div class="flex flex-col gap-1">
+            <h3 class="text-lg font-bold">{{ vehicle.name }}</h3>
+            <p class="text-gray-400">{{ vehicle.vin }}</p>
+          </div>
+          <div class="spinner">{% include 'spinner.html' %}</div>
+          <button
+            class="share indigo-btn fancy-bg text-center"
+            x-token-id="{{ vehicle.token_id }}"
+            class="indigo-btn fancy-bg text-center"
+            _="on click add .loading to <.spinner/>"
+          >
+            Add
+          </button>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-gray-400">You don't have any vehicles.</p>
+      {% endif %}
+    </div>
   </div>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.1.1/web3.min.js"
+    integrity="sha512-C/TYwf93EQ6sPW4g3F9axNydQuQrAQCTOR1Gz65YK96MwrZ0KDn3qjNMAlXLYyjm84JELTYHinAfvUjbNC4fuQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  {{ abi|json_script:'abi' }}
+  <script>
+    console.log('Initializing...');
+    const web3 = new window.Web3(window.ethereum);
+    const contractAddress = '{{ contract_address }}';
+    const contractABI = JSON.parse(document.getElementById('abi').textContent);
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const targetWalletAddress = '{{ target_wallet_address }}';
+
+    async function setPrivilege(vehicleTokenId) {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      console.log('Accounts found: ', accounts);
+      const senderAddress = accounts[0];
+
+      const privilegeId = '1';
+      const expires = '' + getUnixEpochForFutureYears(5);
+
+      const gasPrice = await web3.eth.getGasPrice();
+      const gasEstimate = await contract.methods
+        .setPrivilege(vehicleTokenId, privilegeId, targetWalletAddress, expires)
+        .estimateGas({ from: senderAddress });
+
+      console.log('Gas price: ', gasPrice);
+      console.log('Gas estimate: ', gasEstimate);
+
+      const transactionParameters = {
+        to: contractAddress,
+        from: senderAddress,
+        gas: web3.utils.toHex(gasEstimate),
+        gasPrice: web3.utils.toHex(gasPrice),
+        data: contract.methods
+          .setPrivilege(vehicleTokenId, privilegeId, targetWalletAddress, expires)
+          .encodeABI(),
+      };
+
+      console.log('Transaction parameters: ', transactionParameters);
+
+      try {
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [transactionParameters],
+        });
+        console.log(`Transaction submitted with hash: ${txHash}`);
+      } catch (error) {
+        console.error(`Error submitting transaction: ${error}`);
+      }
+    }
+
+    async function requestFetch(tokenId) {
+      console.log('Requesting fetch')
+      const csrfToken: string = (document.querySelector('input[name="csrfmiddlewaretoken"]') as HTMLInputElement)?.value;
+
+      if ((csrfToken ?? '').length === 0) {
+        return alert('CSRF token not found. Did you program it in?');
+      }
+
+      const response = await fetch('/vehicles/fetch/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ token_id: tokenId }),
+      });
+    }
+
+    function getUnixEpochForFutureYears(years) {
+      const currentDate = new Date();
+      const futureDate = new Date(currentDate);
+      futureDate.setFullYear(currentDate.getFullYear() + years);
+      const unixEpochTimestamp = Math.floor(futureDate.getTime() / 1000);
+      return unixEpochTimestamp;
+    }
+
+    document.querySelectorAll('button.share').forEach((button) => {
+      console.log('Registering button...')
+      button.addEventListener('click', async () => {
+        console.log('Click')
+        const tokenId = button.attributes['x-token-id'].value;
+        try {
+          await setPrivilege(tokenId);
+        } finally {
+          await requestFetch(tokenId);
+        }
+      });
+    });
+  </script>
 {% endblock %}

@@ -27,6 +27,10 @@ textarea {
   @apply py-1 px-4 border-0 rounded-2xl;
 }
 
+input[type="text"].border {
+  border-width: 1px;
+}
+
 .link {
   @apply text-blue-500 underline;
 }
