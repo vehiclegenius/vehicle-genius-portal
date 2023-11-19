@@ -3,7 +3,7 @@
 # Exit on first error
 set -e
 
-sudo supervisorctl stop vehicle_genius_portal
+sudo supervisorctl stop vehicle_genius_portal || true
 
 ./build.sh
 

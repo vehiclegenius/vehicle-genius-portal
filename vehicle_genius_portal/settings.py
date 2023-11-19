@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'test.vehiclegenius.site',
+    'vehiclegenius.site',
 ]
 
 INTERNAL_IPS = [
@@ -38,10 +39,12 @@ INTERNAL_IPS = [
 
 CORS_ORIGIN_WHITELIST = [
     'https://test.vehiclegenius.site',
+    'https://vehiclegenius.site',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://test.vehiclegenius.site',
+    'https://vehiclegenius.site',
 ]
 
 
