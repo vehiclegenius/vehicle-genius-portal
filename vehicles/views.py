@@ -105,7 +105,7 @@ def add_get(request):
             'vin': vehicle['vin'],
             'name': vehicle['deviceDefinition']['name'],
             'token_id': vehicle['nft']['tokenId'],
-        } for vehicle in owned_vehicles['userDevices'] if vehicle['vin'].lower() not in added_vehicle_vins
+        } for vehicle in owned_vehicles['userDevices'] if vehicle['vin'] is not None and vehicle['nft'] is not None and vehicle['nft']['tokenId']  and vehicle['vin'].lower() not in added_vehicle_vins
     ]
     with open('vehicles/abi.json') as abi:
         return render(request, 'vehicles/add_vehicle.html', {
@@ -114,6 +114,7 @@ def add_get(request):
             'contract_address': os.environ.get('DIMO_CONTRACT_ADDRESS'),
             'target_wallet_address': os.environ.get('SHARE_TARGET_WALLET_ADDRESS'),
         })
+
 
 def add_fetch_post(request, pk: str):
     vin = pk
