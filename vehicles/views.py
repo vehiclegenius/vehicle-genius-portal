@@ -165,8 +165,12 @@ def make_dimo_api_get_request(request, url: str):
         'Authorization': f'Bearer {request.COOKIES.get("access_token")}',
     }
     response = requests.get(url, headers=headers)
-    answer = json.loads(response.content.decode('utf-8'))
-    return answer
+    if response.content:
+        try:
+            answer = json.loads(response.content.decode('utf-8'))
+            return answer
+        except json.JSONDecodeError:
+            raise Exception(response.content.decode('utf-8'))
 
 
 def make_api_get_request(uri: str):
@@ -188,8 +192,11 @@ def make_api_post_request(uri: str, body):
         data=json.dumps(body),
         headers=headers)
     if response.content:
-        answer = json.loads(response.content.decode('utf-8'))
-        return answer
+        try:
+            answer = json.loads(response.content.decode('utf-8'))
+            return answer
+        except json.JSONDecodeError:
+            raise Exception(response.content.decode('utf-8'))
     else:
         return None
 
@@ -203,7 +210,12 @@ def make_api_put_request(uri: str, body):
         os.environ.get('API_BASE_URL') + uri,
         data=json.dumps(body),
         headers=headers)
-    return response
+    if response.content:
+        try:
+            json.loads(response.content.decode('utf-8'))
+            return response
+        except json.JSONDecodeError:
+            raise Exception(response.content.decode('utf-8'))
 
 
 def parse_request_post(request_post):
